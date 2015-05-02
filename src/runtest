@@ -1,0 +1,192 @@
+#! /bin/bash
+
+function fatal() {
+    echo "FATAL: $*" >&2
+    exit 1
+}
+
+function checked() {
+    "$@" || fatal "$1 failed with $?: $*"
+}
+
+readonly canonical="$( readlink -m "$BASH_SOURCE" )" || fatal "readlink failed: $BASH_SOURCE"
+readonly basename="${canonical##*/}"
+readonly dirname="${canonical%/*}"
+
+function _sysctl() {
+    old="$( sysctl --values --binary "$1" )" || fatal "sysctl failed: $*"
+    echo "SYSCTL: $1 $2 ($old)"
+    sysctl --write --quiet "$1=$2" || fatal "sysctl failed: $*"
+}
+
+function _ulimit() {
+    old="$( ulimit "$1" )" || fatal "ulimit failed: $*"
+    echo "ULIMIT: $1 $2 ($old)"
+    ulimit "$1" "$2" || fatal "ulimit failed: $*"
+}
+
+function _irq() {
+    old="$( cat /proc/irq/$1/smp_affinity_list )" || fatal "irq failed: $*"
+    echo "IRQ: $1 $2 ($old)"
+    echo "$2" > "/proc/irq/$1/smp_affinity_list" || fatal "irq failed: $*"
+}
+
+function _irqs() {
+    irqs=($(grep eth /proc/interrupts | cut -d: -f1 | sort -n)) || fatal "find irqs failed"
+    checked test "${#irqs[@]}" -eq "$#"
+    _irq "${irqs[0]}" "$1"
+    _irq "${irqs[1]}" "$2"
+    _irq "${irqs[2]}" "$3"
+}
+
+function _init() {
+    _sysctl kernel.pid_max 1000999
+    _sysctl kernel.threads-max 1000999
+    _sysctl vm.max_map_count 2000999
+    _sysctl fs.file-max 2000999
+    _sysctl fs.nr_open 2000999
+    _sysctl net.ipv4.conf.eth0.rp_filter 0
+    _sysctl net.ipv4.conf.all.rp_filter 0
+    _sysctl net.ipv4.ip_forward 0
+    _sysctl net.ipv4.ip_local_port_range "1024 65000"
+    _sysctl net.ipv4.tcp_fin_timeout 15
+    _sysctl net.ipv4.tcp_syn_retries 30
+    # turn TCP timestamp support off, default 1, reduces CPU use
+    _sysctl net.ipv4.tcp_timestamps 0
+    # turn SACK support off; on systems with a VERY fast bus (memory
+    # interface this is the big gainer)
+    _sysctl net.ipv4.tcp_sack 0
+    # set min/default/max TCP read buffer (default 4096 87380 6291456)
+    _sysctl net.ipv4.tcp_rmem "8192 174760 6291456"
+    # set min/pressure/max TCP write buffer (default 4096 16384 4194304)
+    _sysctl net.ipv4.tcp_wmem "8192 32768 4194304"
+    # set min/pressure/max TCP buffer space (default 1448685 1931583 2897370)
+    _sysctl net.ipv4.tcp_mem "1448685 1931583 2897370"
+    # set maximum receive socket buffer size (default 212992)
+    _sysctl net.core.rmem_max 212992
+    # set maximum send socket buffer size (default 212992)
+    _sysctl net.core.wmem_max 212992
+    # set default receive socket buffer size (default 212992)
+    _sysctl net.core.rmem_default 212992
+    # set default send socket buffer size (default 212992)
+    _sysctl net.core.wmem_default 212992
+    # set maximum amount of option memory buffers (default 20480)
+    _sysctl net.core.optmem_max 524287
+    # set number of unprocessed input packets before kernel starts dropping them (default 1000)
+    _sysctl net.core.netdev_max_backlog 999999
+    # max user processes
+    _ulimit -u 1000999
+    # open files (socketfd + timerfd)
+    _ulimit -n 2000999
+    # stack size
+    _ulimit -s 64
+}
+
+function test_async_1() {
+    _init
+    # _irqs 0 0 0 (alles auf einem Core halbiert die Performance ungefähr)
+    _irqs 6 7 8
+    checked "$dirname/../bin/async_server" 9000,9001,9002,9003,9004,9005,9006,9007,9008,9009 0
+}
+
+function test_async_n() {
+    _init
+    _irqs 6 7 8
+    checked "$dirname/../bin/async_server" 9000,9001,9002,9003,9004,9005,9006,9007,9008,9009 0,1,2,3,4,5
+}
+
+function test_sync_n() {
+    _init
+    _irqs 6 7 8
+    checked "$dirname/../bin/sync_server" 9000,9001,9002,9003,9004,9005,9006,9007,9008,9009 0,1,2,3,4,5
+}
+
+function _client() {
+    _init
+    _irq 6 7 8
+    checked "$dirname/../bin/async_client" "$1" 9000,9001,9002,9003,9004,9005,9006,9007,9008,9009 500000 "$2" "$3" 0,1,2,3,4,5
+}
+
+# ASYNC-1: 232.095 (200k)
+# ASYNC-N: 445.725
+# SYNC-N: 428.060
+function test_client_bandwidth_40() {
+    _client "$1" 300000 80
+}
+
+# XXX: ASYNC-N:~460.000/s SYNC-N:~445.000 ASNYC-1:~200.000/s
+#
+# ASYNC-1: 199.261 (200k)
+# ASYNC-N: 448.850
+# SYNC-N: 414.346
+function test_client_bandwidth_400() {
+    #_client "$1" 250000 800
+    _client "$1" 210000 800
+}
+
+# XXX: ASYNC-N:~290.000/s ASYNC-1:~100.000/s
+#
+# ASYNC-1: 110.859 (200k)
+# ASYNC-N: 279.293
+# SYNC-N: 270.705
+function test_client_bandwidth_4000() {
+    _client "$1" 160000 8000
+}
+
+# ASYNC-1: 152µs (200k)
+# ASYNC-N: 136µs
+# SYNC-N: 136µs
+#
+# CPU:
+# ASYNC-1: user:747 system:1079 irq:990 (jiffies) (200k)
+# ASYNC-N: user:1063 system:1612 irq:846 (jiffies)
+# SYNC-N: user:215 system:2221 irq:929 (jiffies)
+#
+# RAM:
+# ASYNC-1: 5.3 GB
+# ASYNC-N: 5.4 GB
+# SYNC-N: 32.6 GB
+
+function test_client_latency_a() {
+    _client "$1" 50000 800
+}
+
+# ASYNC-1: 211µs (200k)
+# ASYNC-N: 160µs
+# SYNC-N: 160µs
+function test_client_latency_b() {
+    _client "$1" 75000 800
+}
+
+# ASYNC-1: ??? (200k)
+# ASYNC-N: 178µs
+# SYNC-N: 178µs
+function test_client_latency_x() {
+    _client "$1" 100000 800
+}
+
+# ASYNC-1: ???
+# ASYNC-N: 229µs
+# SYNC-N: 231µs
+function test_client_latency_c() {
+    _client "$1" 150000 800
+}
+
+# ASYNC-1: ???
+# ASYNC-N: 260µs
+# SYNC-N: 256µs
+function test_client_latency_d() {
+    _client "$1" 175000 800
+}
+
+# XXX: ASYNC-N:~300µs SYNC-N:~300µs
+function test_client_latency_90() {
+    _client "$1" 200000 800
+}
+
+action="$1"
+shift
+"test_$action" "$@"
+
+# Check resource usage with /proc/stat and /proc/meminfo for the whole
+# system (instead of a single process).
