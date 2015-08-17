@@ -160,7 +160,7 @@ int main(int argc, char* argv[])
         for (auto port : ports) {
             threads.emplace_back(worker, std::ref(queue), port, cpus);
         }
-        std::mt19937 random{std::random_device{}()};
+        std::mt19937 random(std::random_device{}());
         std::uniform_int_distribution<std::size_t> dist(0, cpus.size() - 1);
         for (;;) {
             for (auto&& socket : queue.pop()) {

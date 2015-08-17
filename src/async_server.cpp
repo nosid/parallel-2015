@@ -22,12 +22,12 @@ namespace
         asio::ip::tcp::endpoint _peer;
         buffer _buffer;
         asio::steady_timer _timer;
-        bool _timeout{false};
+        bool _timeout = false;
     public: // --- life ---
         explicit stream(asio::ip::tcp::socket socket, asio::ip::tcp::endpoint peer)
-            : _socket{std::move(socket)} , _peer{std::move(peer)}, _timer{_socket.get_io_service()}
+            : _socket(std::move(socket)) , _peer(std::move(peer)), _timer(_socket.get_io_service())
         {
-            _socket.set_option(asio::ip::tcp::no_delay{true});
+            _socket.set_option(asio::ip::tcp::no_delay(true));
         }
     public: // --- operations ---
         auto data() { return _buffer.data(); }
@@ -55,7 +55,7 @@ namespace
             auto p = _buffer.data(), q = p + _buffer.available();
             auto r = std::find(p + offset, q, '\n');
             if (r != q) {
-                handler(error_code{}, r - p + 1);
+                handler(error_code(), r - p + 1);
             } else {
                 try {
                     _buffer.reserve(1500);
@@ -100,7 +100,7 @@ namespace
         stream _stream;
     public: // --- life ---
         explicit session(asio::ip::tcp::socket socket, asio::ip::tcp::endpoint peer)
-            : _stream{std::move(socket), std::move(peer)}
+            : _stream(std::move(socket), std::move(peer))
         { }
     public: // --- operations ---
         void start()
@@ -155,9 +155,9 @@ namespace
         asio::ip::tcp::endpoint _peer;
     public: // --- life ---
         explicit server(io_service_executor& executor, unsigned short port)
-            : _executor{executor}
-            , _acceptor{executor.get_io_service(), asio::ip::tcp::endpoint{asio::ip::tcp::v4(), port}}
-            , _socket{_executor.get_io_service()}
+            : _executor(executor)
+            , _acceptor(executor.get_io_service(), asio::ip::tcp::endpoint(asio::ip::tcp::v4(), port))
+            , _socket(_executor.get_io_service())
         {
             _async_accept();
         }
@@ -165,8 +165,8 @@ namespace
         void _async_accept()
         {
             _acceptor.async_accept(_socket, _peer, [this](error_code ec) {
-                    asio::ip::tcp::socket socket{std::move(_socket)};
-                    _socket = asio::ip::tcp::socket{_executor.get_io_service()};
+                    asio::ip::tcp::socket socket(std::move(_socket));
+                    _socket = asio::ip::tcp::socket(_executor.get_io_service());
                     asio::ip::tcp::endpoint peer = std::move(_peer);
                     _async_accept();
                     if (ec) {
@@ -196,14 +196,14 @@ int main(int argc, char* argv[])
             "local-ports", ports,
             "cpu-set", cpus);
         // run
-        io_service_executor executor{cpus};
+        io_service_executor executor(cpus);
         std::vector<server> servers;
         servers.reserve(ports.size());
         for (auto port : ports) {
             servers.emplace_back(executor, port);
         }
         executor.run();
-    } catch (std::exception& e)  {
+    } catch (std::exception& e) {
         std::cerr << "ERROR: " << e.what() << "\n";
         return EXIT_FAILURE;
     }

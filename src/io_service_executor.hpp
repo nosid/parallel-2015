@@ -23,10 +23,10 @@ namespace demo
     private: // --- state ---
         std::vector<int> _cpus;
         std::vector<aligned_io_service> _io_services;
-        std::size_t _next{0};
+        std::size_t _next = 0;
     public: // --- life ---
         explicit io_service_executor(std::vector<int> cpus)
-            : _cpus{std::move(cpus)}, _io_services(_cpus.size())
+            : _cpus(std::move(cpus)), _io_services(_cpus.size())
         { }
         io_service_executor(const self& rhs) = delete;
         io_service_executor(const self&& rhs) noexcept = delete;
@@ -49,7 +49,7 @@ namespace demo
             for (std::size_t i = 0; i < _cpus.size(); ++i) {
                 threads.emplace_back([this,i] {
                         thread_affinity({_cpus[i]});
-                        asio::io_service::work guard{_io_services[i]._io_service};
+                        asio::io_service::work guard(_io_services[i]._io_service);
                         _io_services[i]._io_service.run();
                     });
             }

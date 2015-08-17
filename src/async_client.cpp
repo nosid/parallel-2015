@@ -140,7 +140,7 @@ namespace
         {
             _socket.async_connect(_peer, [this,handler=std::forward<Handler>(handler)](error_code ec) mutable {
                     if (!ec) {
-                        _socket.set_option(asio::ip::tcp::no_delay(true));
+                        _socket.set_option(tcp::no_delay(true));
                     }
                     handler(ec);
                 });
@@ -277,7 +277,7 @@ namespace
         public: // --- operations ---
             auto split(double ratio) -> record
             {
-                record result{_count, _requests * ratio, _latencies * ratio};
+                record result(_count, _requests * ratio, _latencies * ratio);
                 _requests -= result._requests;
                 _latencies -= result._latencies;
                 return result;
@@ -534,7 +534,7 @@ int main(int argc, char* argv[])
         for (auto&& thread : threads) {
             thread.join();
         }
-    } catch (std::exception& e)  {
+    } catch (std::exception& e) {
         std::cerr << "ERROR: " << e.what() << "\n";
         return EXIT_FAILURE;
     }

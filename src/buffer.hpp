@@ -11,10 +11,10 @@ namespace demo
     private: // --- scope ---
         using self = buffer;
     private: // --- state ---
-        char* _data{nullptr};
-        std::size_t _capacity{0};
-        std::size_t _bias{0};
-        std::size_t _size{0};
+        char* _data = nullptr;
+        std::size_t _capacity = 0;
+        std::size_t _bias = 0;
+        std::size_t _size = 0;
     public: // --- life ---
         explicit buffer() noexcept = default;
         buffer(const self& rhs) = delete;

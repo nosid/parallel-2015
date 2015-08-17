@@ -22,17 +22,17 @@ namespace demo
         using time_point = steady_clock::time_point;
         using duration = std::chrono::nanoseconds;
     private: // --- state ---
-        int _fd{-1};
+        int _fd = -1;
     public: // --- life ---
         explicit deadline(const duration& duration)
-            : deadline{}
+            : deadline()
         {
             _init_aux();
             _expires_from_now_aux(duration);
         }
         deadline(const self& rhs) = delete;
         deadline(self&& rhs) noexcept
-            : deadline{}
+            : deadline()
         {
             swap(rhs);
         }
@@ -47,10 +47,10 @@ namespace demo
     public: // --- operations ---
         auto operator=(const self& rhs) & -> self& = delete;
         auto operator=(self&& rhs) & noexcept -> self&
-            {
-                swap(rhs);
-                return *this;
-            }
+        {
+            swap(rhs);
+            return *this;
+        }
         void swap(self& rhs) noexcept
         {
             std::swap(_fd, rhs._fd);
@@ -141,17 +141,17 @@ namespace demo
     private: // --- scope ---
         using self = acceptor;
     private: // --- state ---
-        int _fd{-1};
+        int _fd = -1;
     public: // --- life ---
         explicit acceptor(unsigned short port, int backlog)
-            : acceptor{}
+            : acceptor()
         {
             _fd = ::socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK | SOCK_CLOEXEC, 0);
             if (_fd == -1) {
                 throw std::runtime_error("tcp-socket-error");
             }
-            setsockopt_aux(_fd, SOL_SOCKET, SO_REUSEADDR, int{1});
-            setsockopt_aux(_fd, SOL_SOCKET, SO_REUSEPORT, int{1});
+            setsockopt_aux(_fd, SOL_SOCKET, SO_REUSEADDR, int(1));
+            setsockopt_aux(_fd, SOL_SOCKET, SO_REUSEPORT, int(1));
             sockaddr_in sa;
             sa.sin_family = AF_INET;
             sa.sin_port = htons(port);
@@ -165,7 +165,7 @@ namespace demo
         }
         acceptor(const self& rhs) = delete;
         acceptor(self&& rhs) noexcept
-            : acceptor{}
+            : acceptor()
         {
             swap(rhs);
         }
@@ -180,10 +180,10 @@ namespace demo
     public: // --- operations ---
         auto operator=(const self& rhs) & -> self& = delete;
         auto operator=(self&& rhs) & noexcept -> self&
-            {
-                swap(rhs);
-                return *this;
-            }
+        {
+            swap(rhs);
+            return *this;
+        }
         void swap(self& rhs) noexcept
         {
             std::swap(_fd, rhs._fd);
@@ -205,12 +205,12 @@ namespace demo
         using self = socket;
     private: // --- state ---
         sockaddr_in _peer;
-        int _fd{-1};
-        bool _wait_recv{false};
-        bool _wait_send{false};
+        int _fd = -1;
+        bool _wait_recv = false;
+        bool _wait_send = false;
     public: // --- life ---
         explicit socket(acceptor& acceptor, deadline& deadline)
-            : socket{}
+            : socket()
         {
             bool waited = false;
             socklen_t length = sizeof(_peer);
@@ -218,7 +218,7 @@ namespace demo
                 _fd = ::accept4(acceptor.get_native_handle(),
                     reinterpret_cast<sockaddr*>(&_peer), &length, SOCK_NONBLOCK | SOCK_CLOEXEC);
                 if (_fd != -1) {
-                    setsockopt_aux(_fd, IPPROTO_TCP, TCP_NODELAY, int{1});
+                    setsockopt_aux(_fd, IPPROTO_TCP, TCP_NODELAY, int(1));
                     break;
                 } else if (!waited && (errno == EAGAIN || errno == EWOULDBLOCK)) {
                     deadline.wait(acceptor.get_native_handle(), POLLIN);
@@ -232,7 +232,7 @@ namespace demo
         }
         socket(const self& rhs) = delete;
         socket(self&& rhs) noexcept
-            : socket{}
+            : socket()
         {
             swap(rhs);
         }
