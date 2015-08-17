@@ -1,6 +1,6 @@
-CXX=g++-4.9
+CXX=g++-5
 CPPFLAGS=-DNDEBUG
-CXXFLAGS=-std=c++1y -Wall -Wextra -Werror -O3 -pthread -fdiagnostics-color -march=native
+CXXFLAGS=-std=c++1z -Wall -Wextra -Werror -O3 -pthread -fdiagnostics-color -march=native
 LDFLAGS=-pthread
 LDLIBS=-lboost_system
 
