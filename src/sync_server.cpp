@@ -172,9 +172,6 @@ int main(int argc, char* argv[])
                     }).detach();
             }
         }
-        for (auto&& thread : threads) {
-            thread.join();
-        }
 
     } catch (const std::exception& e) {
         std::cerr << "ERROR: " << e.what() << "\n";
