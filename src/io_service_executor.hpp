@@ -47,7 +47,7 @@ namespace demo
              * Unterschiede geben, die das Ergebnis verzerrren. */
             std::vector<std::thread> threads;
             for (std::size_t i = 0; i < _cpus.size(); ++i) {
-                threads.emplace_back([this,i] {
+                threads.emplace_back([this, i] {
                         thread_affinity({_cpus[i]});
                         asio::io_service::work guard(_io_services[i]._io_service);
                         _io_services[i]._io_service.run();
