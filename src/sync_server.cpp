@@ -130,6 +130,7 @@ namespace
     };
 
 
+    [[noreturn]]
     void worker(queue& queue, unsigned short port, std::vector<int> cpus)
     {
         thread_affinity(cpus);
