@@ -31,7 +31,7 @@ namespace
 
     using clock = std::chrono::system_clock;
     using time_point = clock::time_point;
-    using duration = std::chrono::duration<long double>;
+    using duration = std::chrono::duration<double>;
 
     using owner = std::shared_ptr<void>;
 
@@ -354,7 +354,7 @@ namespace
                 std::cout << "STATUS: "
                           << std::chrono::duration_cast<seconds>(to.time_since_epoch()).count()
                           << " "
-                          << static_cast<std::size_t>(1.0s / _interval * _record._requests)
+                          << static_cast<std::size_t>(duration(1s) / _interval * _record._requests)
                           << " "
                           << std::chrono::duration_cast<microseconds>(_record._latencies / (_record._requests + 1)).count()
                           << " "
