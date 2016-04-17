@@ -7,7 +7,7 @@ namespace demo
 
     template <typename Result>
     auto parse_command_line_arg(const std::string& arg, Result& result)
-        -> typename std::enable_if<std::is_integral<Result>::value, void>::type
+        -> std::enable_if_t<std::is_integral<Result>::value>
     {
         std::istringstream is(arg);
         is >> result;
@@ -15,7 +15,7 @@ namespace demo
 
     template <typename Value>
     auto format_command_line_arg(std::ostream& os, const Value& value)
-        -> typename std::enable_if<std::is_integral<Value>::value, void>::type
+        -> std::enable_if_t<std::is_integral<Value>::value>
     {
         os << value;
     }
