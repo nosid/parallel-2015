@@ -25,7 +25,7 @@ namespace
         bool _timeout = false;
     public: // --- life ---
         explicit stream(asio::ip::tcp::socket socket, asio::ip::tcp::endpoint peer)
-            : _socket(std::move(socket)) , _peer(std::move(peer)), _timer(_socket.get_io_service())
+            : _socket(std::move(socket)), _peer(std::move(peer)), _timer(_socket.get_io_service())
         {
             _socket.set_option(asio::ip::tcp::no_delay(true));
         }
