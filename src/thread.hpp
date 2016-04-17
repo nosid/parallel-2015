@@ -5,7 +5,7 @@
 namespace demo
 {
 
-    void thread_affinity(const std::vector<int>& cpus)
+    inline void thread_affinity(const std::vector<int>& cpus)
     {
         cpu_set_t expected;
         CPU_ZERO(&expected);

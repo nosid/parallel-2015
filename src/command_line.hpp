@@ -20,12 +20,12 @@ namespace demo
         os << value;
     }
 
-    void parse_command_line_arg(const std::string& arg, std::string& result)
+    inline void parse_command_line_arg(const std::string& arg, std::string& result)
     {
         result = arg;
     }
 
-    void format_command_line_arg(std::ostream& os, const std::string& value)
+    inline void format_command_line_arg(std::ostream& os, const std::string& value)
     {
         os << std::quoted(value);
     }
