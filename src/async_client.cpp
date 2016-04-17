@@ -524,7 +524,7 @@ int main(int argc, char* argv[])
             threads.emplace_back(
                 [cpu,endpoints=std::vector<tcp::endpoint>(p, q),range,watermark,controller,rps=rps_(),bulk_connect=bulk_connect_()] {
                     thread_affinity({cpu});
-                    auto threshold = endpoints.size();
+                    auto threshold = static_cast<int>(endpoints.size());
                     asio::io_service io_service;
                     std::make_shared<driver>(io_service, endpoints, bulk_connect, scheduler(controller, watermark, rps, threshold), chunker(range))->async_run();
                     io_service.run();
