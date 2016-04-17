@@ -117,12 +117,12 @@ namespace
                         auto data = _stream.data();
                         std::reverse(data, data + length - 1);
                         _stream.async_write_n(data, length,
-                            [this,self=std::move(self)](error_code ec, std::size_t length) mutable {
-                                if (_stream.good(ec)) {
-                                    _stream.drain(length);
+                            [this,self=std::move(self)](error_code ec2, std::size_t length2) mutable {
+                                if (_stream.good(ec2)) {
+                                    _stream.drain(length2);
                                     _async_run(std::move(self));
                                 } else {
-                                    _handle_error(ec, "sending data to client");
+                                    _handle_error(ec2, "sending data to client");
                                 }
                             });
                     } else {

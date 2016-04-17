@@ -468,13 +468,14 @@ namespace
     private:
         void _async_run(std::shared_ptr<driver> self)
         {
-            auto now = clock::now();
-            while (_watermark <= now) {
-                _dispatcher.async_roundtrip(_chunker(), [this,self,start=now] {
+            auto horizon = clock::now();
+            while (_watermark <= horizon) {
+                _dispatcher.async_roundtrip(_chunker(), [this,self,start=horizon] {
                         auto now = clock::now();
                         _scheduler.completed(now, now - start);
                     });
-                _watermark += std::chrono::duration_cast<clock::duration>(_scheduler.initiated(now));
+                _watermark += std::chrono::duration_cast<clock::duration>(
+                    _scheduler.initiated(horizon));
             }
             _timer.expires_at(_watermark);
             _timer.async_wait([this,self=std::move(self)](error_code ec) {
