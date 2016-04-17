@@ -271,7 +271,7 @@ namespace demo
                 ssize_t rv = ::recv(_fd, data, size, MSG_NOSIGNAL);
                 if (rv != -1) {
                     _wait_recv = std::size_t(rv) < size;
-                    return rv;
+                    return static_cast<std::size_t>(rv);
                 } else if (errno == EAGAIN || errno == EWOULDBLOCK) {
                     deadline.wait(_fd, POLLIN);
                 } else {
@@ -288,7 +288,8 @@ namespace demo
                 ssize_t rv = ::send(_fd, data, size, MSG_NOSIGNAL);
                 if (rv != -1) {
                     _wait_send = std::size_t(rv) < size;
-                    return rv;
+                    return static_cast<std::size_t>(rv);
+
                 } else if (errno == EAGAIN || errno == EWOULDBLOCK) {
                     deadline.wait(_fd, POLLOUT);
                 } else {

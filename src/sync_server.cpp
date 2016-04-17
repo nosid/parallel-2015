@@ -37,7 +37,7 @@ namespace
                 auto p = _buffer.data(), q = p + _buffer.available();
                 auto r = std::find(q - count, q, '\n');
                 if (r != q) {
-                    return r - p + 1;
+                    return static_cast<std::size_t>(r - p) + 1;
                 }
             } while ((count = _read_some(1500, deadline)));
             return 0;

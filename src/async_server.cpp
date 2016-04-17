@@ -55,7 +55,7 @@ namespace
             auto p = _buffer.data(), q = p + _buffer.available();
             auto r = std::find(p + offset, q, '\n');
             if (r != q) {
-                handler(error_code(), r - p + 1);
+                handler(error_code(), static_cast<std::size_t>(r - p) + 1);
             } else {
                 try {
                     _buffer.reserve(1500);
