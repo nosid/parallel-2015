@@ -1,4 +1,5 @@
 #include <iostream>
+#include <numeric>
 
 #include "boost/asio/steady_timer.hpp"
 
