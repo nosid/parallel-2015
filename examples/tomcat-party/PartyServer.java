@@ -47,7 +47,7 @@ public final class PartyServer {
         protocol.setMaxThreads(concurrency); // default: 200
         protocol.setMaxConnections(concurrency); // default: 10000
         protocol.setMinSpareThreads(concurrency); // default: 10
-        protocol.setBacklog(100); // default: 100
+        protocol.setBacklog(1 << 14); // default: 100
         // protocol.setAcceptorThreadCount(4); // default: 1 (since tomcat9)
         tomcat.start();
     }
