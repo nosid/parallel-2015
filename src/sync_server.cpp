@@ -136,7 +136,7 @@ namespace
     void worker(queue& queue, unsigned short port, std::vector<int> cpus)
     {
         thread_affinity(cpus);
-        tcp::acceptor acceptor(port, SOMAXCONN);
+        tcp::acceptor acceptor(port, 1 << 14);
         deadline deadline(3600s);
         for (;;) {
             queue.push(tcp::socket(acceptor, deadline));
