@@ -46,6 +46,7 @@ namespace demo
              * aufgrund der Lokalitaet zu den NIC-IRQs koennte es theoretisch
              * Unterschiede geben, die das Ergebnis verzerrren. */
             std::vector<std::thread> threads;
+            threads.reserve(_cpus.size());
             for (std::size_t i = 0; i < _cpus.size(); ++i) {
                 threads.emplace_back([this, i] {
                         thread_affinity({_cpus[i]});
