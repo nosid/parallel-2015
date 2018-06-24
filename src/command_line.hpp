@@ -52,8 +52,7 @@ namespace demo
     void format_command_line_arg(std::ostream& os, const std::vector<Value>& values)
     {
         os << '{';
-        auto p = values.begin(), q = values.end();
-        if (p != q) {
+        if (auto p = values.begin(), q = values.end(); p != q) {
             format_command_line_arg(os, *p);
             for (++p; p != q; ++p) {
                 os << ',';
