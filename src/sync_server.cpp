@@ -132,7 +132,7 @@ namespace
 
 
     [[noreturn]]
-    void worker(queue& queue, unsigned short port, std::vector<int> cpus)
+    void worker(queue& queue, unsigned short port, const std::vector<int>& cpus)
     {
         thread_affinity(cpus);
         tcp::acceptor acceptor(port, 1 << 14);
