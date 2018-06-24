@@ -289,7 +289,6 @@ namespace demo
                 if (rv != -1) {
                     _wait_send = std::size_t(rv) < size;
                     return static_cast<std::size_t>(rv);
-
                 } else if (errno == EAGAIN || errno == EWOULDBLOCK) {
                     deadline.wait(_fd, POLLOUT);
                 } else {
