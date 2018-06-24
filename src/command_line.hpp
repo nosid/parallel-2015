@@ -63,7 +63,7 @@ namespace demo
 
 
     template <typename... Args>
-    void parse_command_line(std::ostream& os, int argc, char* argv[] __attribute__((unused)))
+    void parse_command_line(std::ostream& os, int argc, char* argv[] [[maybe_unused]])
     {
         os << std::flush;
         if (argc > 0) {

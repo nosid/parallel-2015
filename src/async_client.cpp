@@ -36,7 +36,7 @@ namespace
     using owner = std::shared_ptr<void>;
 
 
-    void append(std::ostream& os __attribute__((unused))) { }
+    void append(std::ostream& os [[maybe_unused]]) { }
 
     template <typename Head, typename... Tail>
     void append(std::ostream& os, Head&& head, Tail&&... tail)

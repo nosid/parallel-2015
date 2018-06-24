@@ -6,7 +6,7 @@
 namespace demo
 {
 
-    inline void log_aux(std::ostream& os __attribute__((unused))) { }
+    inline void log_aux(std::ostream& os [[maybe_unused]]) { }
 
     template <typename Head, typename... Tail>
     void log_aux(std::ostream& os, Head&& head, Tail&&... tail)
