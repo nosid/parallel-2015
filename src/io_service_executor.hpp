@@ -1,7 +1,7 @@
 #pragma once
 
-#include <vector>
 #include <thread>
+#include <vector>
 
 #include "boost/asio.hpp"
 

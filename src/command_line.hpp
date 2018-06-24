@@ -1,6 +1,8 @@
 #pragma once
 
 #include <iomanip>
+#include <string>
+#include <vector>
 
 namespace demo
 {

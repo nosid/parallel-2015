@@ -1,6 +1,9 @@
 #pragma once
 
-#include <thread>
+#include <stdexcept>
+#include <vector>
+
+#include <pthread.h>
 
 namespace demo
 {
