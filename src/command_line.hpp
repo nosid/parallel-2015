@@ -72,7 +72,7 @@ namespace demo
     }
 
     template <typename Head, typename... Tail>
-    void parse_command_line(std::ostream& os, int argc, char* argv[], const char* name, Head&& head, Tail&&... tail)
+    void parse_command_line(std::ostream& os, int argc, char* argv[], std::string_view name, Head&& head, Tail&&... tail)
     {
         if (argc >= 1) {
             parse_command_line_arg(argv[0], head);
