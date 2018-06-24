@@ -9,7 +9,6 @@
 
 #include "buffer.hpp"
 #include "command_line.hpp"
-#include "partition.hpp"
 #include "tcp.hpp"
 #include "thread.hpp"
 

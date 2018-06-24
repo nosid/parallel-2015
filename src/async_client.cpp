@@ -514,9 +514,9 @@ int main(int argc, char* argv[])
         for (std::size_t i = 0; i != connections; ++i) {
             endpoints.emplace_back(address, ports[i % ports.size()]);
         }
-        auto&& rps_ = partition(rps, cpus.size());
-        auto&& connections_ = partition(connections, cpus.size());
-        auto&& bulk_connect_ = partition(bulk_connect, cpus.size());
+        auto&& rps_ = partitioner(rps, cpus.size());
+        auto&& connections_ = partitioner(connections, cpus.size());
+        auto&& bulk_connect_ = partitioner(bulk_connect, cpus.size());
         time_point watermark = clock::now();
         auto controller = std::make_shared<class controller>(cpus.size(), watermark);
         std::vector<std::thread> threads;
