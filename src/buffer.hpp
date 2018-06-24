@@ -63,7 +63,7 @@ namespace demo
                     _data = data;
                     _capacity = capacity;
                 } else {
-                    throw std::bad_alloc{};
+                    throw std::bad_alloc();
                 }
             } else {
                 capacity = std::max(capacity, _size + required);
@@ -73,7 +73,7 @@ namespace demo
                     _data = data;
                     _capacity = capacity;
                 } else {
-                    throw std::bad_alloc{};
+                    throw std::bad_alloc();
                 }
             }
         }
