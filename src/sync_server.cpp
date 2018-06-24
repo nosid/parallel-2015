@@ -160,7 +160,7 @@ int main(int argc, char* argv[])
         // run
         queue queue;
         std::vector<std::thread> threads;
-        for (auto port : ports) {
+        for (auto&& port : ports) {
             threads.emplace_back(worker, std::ref(queue), port, cpus);
         }
         std::mt19937 random(std::random_device{}());

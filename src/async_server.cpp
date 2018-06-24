@@ -200,7 +200,7 @@ int main(int argc, char* argv[])
         io_service_executor executor(cpus);
         std::vector<server> servers;
         servers.reserve(ports.size());
-        for (auto port : ports) {
+        for (auto&& port : ports) {
             servers.emplace_back(executor, port);
         }
         executor.run();

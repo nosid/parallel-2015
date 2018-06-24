@@ -520,7 +520,7 @@ int main(int argc, char* argv[])
         time_point watermark = clock::now();
         auto controller = std::make_shared<class controller>(cpus.size(), watermark);
         std::vector<std::thread> threads;
-        for (auto cpu : cpus) {
+        for (auto&& cpu : cpus) {
             auto q = endpoints.end(), p = q - static_cast<ptrdiff_t>(connections_());
             threads.emplace_back(
                 [cpu,endpoints=std::vector<tcp::endpoint>(p, q),range,watermark,controller,rps=rps_(),bulk_connect=bulk_connect_()] {

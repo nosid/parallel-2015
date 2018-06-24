@@ -9,7 +9,7 @@ namespace demo
     {
         cpu_set_t expected;
         CPU_ZERO(&expected);
-        for (auto cpu : cpus) {
+        for (auto&& cpu : cpus) {
             CPU_SET(cpu, &expected);
         }
         auto self = ::pthread_self();
