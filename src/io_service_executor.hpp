@@ -29,7 +29,7 @@ namespace demo
             : _cpus(std::move(cpus)), _io_services(_cpus.size())
         { }
         io_service_executor(const self& rhs) = delete;
-        io_service_executor(const self&& rhs) noexcept = delete;
+        io_service_executor(self&& rhs) noexcept = delete;
         ~io_service_executor() noexcept = default;
     public: // --- operations ---
         auto operator=(const self& rhs) & -> self = delete;
