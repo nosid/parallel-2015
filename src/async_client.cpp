@@ -391,9 +391,9 @@ namespace
         double _rps;
         int _threshold;
         time_point _base = clock::now();
-        state _pending;
-        state _previous;
-        state _completed;
+        state _pending{};
+        state _previous{};
+        state _completed{};
     public: // --- life ---
         explicit scheduler(
             std::shared_ptr<controller> controller,
