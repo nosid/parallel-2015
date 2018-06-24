@@ -19,7 +19,7 @@ namespace
     using namespace std::chrono_literals;
     using namespace demo;
 
-    class stream final
+    class stream
     {
     private: // --- state ---
         tcp::socket _socket;
@@ -61,7 +61,7 @@ namespace
     };
 
 
-    class session final
+    class session
     {
     private: // --- state ---
         stream _stream;
@@ -104,7 +104,7 @@ namespace
     };
 
 
-    class queue final
+    class queue
     {
     private: // --- state ---
         std::mutex _mutex;

@@ -6,7 +6,7 @@
 namespace demo
 {
 
-    class buffer final
+    class buffer
     {
     private: // --- scope ---
         using self = buffer;

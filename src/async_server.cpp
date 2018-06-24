@@ -16,7 +16,7 @@ namespace
     using error_code = boost::system::error_code;
 
 
-    class stream final
+    class stream
     {
     private: // --- state ---
         asio::ip::tcp::socket _socket;
@@ -95,7 +95,7 @@ namespace
     };
 
 
-    class session final : public std::enable_shared_from_this<session>
+    class session : public std::enable_shared_from_this<session>
     {
     private: // --- state ---
         stream _stream;
@@ -147,7 +147,7 @@ namespace
     };
 
 
-    class server final
+    class server
     {
     private: // --- state ---
         io_service_executor& _executor;

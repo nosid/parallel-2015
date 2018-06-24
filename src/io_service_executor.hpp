@@ -12,11 +12,11 @@ namespace demo
 
     namespace asio = boost::asio;
 
-    class io_service_executor final
+    class io_service_executor
     {
     private: // --- scope ---
         using self = io_service_executor;
-        struct alignas(64) aligned_io_service final
+        struct alignas(64) aligned_io_service
         {
             asio::io_service _io_service;
         };

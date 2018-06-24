@@ -14,7 +14,7 @@
 namespace demo
 {
 
-    class deadline final
+    class deadline
     {
     private: // --- scope ---
         using self = deadline;
@@ -128,7 +128,7 @@ namespace demo
     }
 
 
-    class tcp final
+    class tcp
     {
     public: // --- scope ---
         class acceptor;
@@ -136,7 +136,7 @@ namespace demo
     };
 
 
-    class tcp::acceptor final
+    class tcp::acceptor
     {
     private: // --- scope ---
         using self = acceptor;
@@ -199,7 +199,7 @@ namespace demo
     };
 
 
-    class tcp::socket final
+    class tcp::socket
     {
     private: // --- scope ---
         using self = socket;

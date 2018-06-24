@@ -61,7 +61,7 @@ namespace
     do { abort_on_error_aux(ec, " file:", __FILE__, " line:", __LINE__, " func:", __PRETTY_FUNCTION__, __VA_ARGS__); } while (false)
 
 
-    class chunk final
+    class chunk
     {
     private: // --- state ---
         char* _data;
@@ -76,7 +76,7 @@ namespace
     };
 
 
-    class chunker final
+    class chunker
     {
     private: // --- state ---
         std::size_t _size;
@@ -105,10 +105,10 @@ namespace
     };
 
 
-    class session final
+    class session
     {
     private: // --- scope ---
-        class request final
+        class request
         {
         private: // --- state ---
             chunk _chunk;
@@ -194,11 +194,11 @@ namespace
     };
 
 
-    class dispatcher final
+    class dispatcher
     {
     private: // --- scope ---
         template <typename Handler>
-        class connector final
+        class connector
         {
         public: // --- state ---
             Handler _handler;
@@ -258,10 +258,10 @@ namespace
     };
 
 
-    class controller final
+    class controller
     {
     private: // --- scope ---
-        class record final
+        class record
         {
         public: // --- state ---
             std::size_t _count;
@@ -371,10 +371,10 @@ namespace
     };
 
 
-    class scheduler final
+    class scheduler
     {
     private: // --- scope ---
-        class state final
+        class state
         {
         public: // --- state ---
             int _count = 0;
@@ -436,7 +436,7 @@ namespace
     };
 
 
-    class driver final : public std::enable_shared_from_this<driver>
+    class driver : public std::enable_shared_from_this<driver>
     {
     private: // --- state ---
         asio::system_timer _timer;
