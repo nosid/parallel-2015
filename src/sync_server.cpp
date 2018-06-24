@@ -113,12 +113,10 @@ namespace
         void push(tcp::socket socket)
         {
             std::unique_lock<std::mutex> lock(_mutex);
-            bool notify = _sockets.empty();
-            _sockets.push_back(std::move(socket));
-            lock.unlock();
-            if (notify) {
+            if (_sockets.empty()) {
                 _empty.notify_one();
             }
+            _sockets.push_back(std::move(socket));
         }
         auto pop()
         {
